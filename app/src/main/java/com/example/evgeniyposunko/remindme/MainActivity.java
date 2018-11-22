@@ -1,15 +1,20 @@
 package com.example.evgeniyposunko.remindme;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.evgeniyposunko.remindme.adapter.TabsPagerFragmentAdapter;
+import com.example.evgeniyposunko.remindme.fragment.Constants;
 
 public class MainActivity extends AppCompatActivity { //AppCompatActivity-поддержка всего с дизайнЛайбрери
 
@@ -28,7 +33,7 @@ public class MainActivity extends AppCompatActivity { //AppCompatActivity-под
         setContentView(LAYOUT);
     
         initToolbar();
-        ititNavigationView();
+        initNavigationView();
         initTabs();
 
 
@@ -37,8 +42,9 @@ public class MainActivity extends AppCompatActivity { //AppCompatActivity-под
 
     private void initToolbar() {
         toolbar = (Toolbar)findViewById(R.id.toolbar);
-        setTitle(R.string.app_name); //В туллбар указываю имя из sring файла
+        toolbar.setTitle(R.string.app_name); //В туллбар указываю имя из sring файла
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 return false;
@@ -55,10 +61,32 @@ public class MainActivity extends AppCompatActivity { //AppCompatActivity-под
         TabLayout tabLayout = (TabLayout)findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
 
+
     }
 
-    private void ititNavigationView() {
+    private void initNavigationView() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                                        R.string.view_navigation_open, R.string.view_navigation_close);
+        drawerLayout.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                drawerLayout.closeDrawers();
+                switch (menuItem.getItemId()){
+                    case R.id.actionNotificationItem:
+                        showNotificationTab();
+                }
+                return true;
+            }
+        });
+    }
+    private void showNotificationTab(){
+        viewPager.setCurrentItem(Constants.TAB_TWO);
     }
 
 }
